@@ -1,0 +1,25 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build OpenCV",
+            "type": "process",
+            "command": "pwsh.exe",
+            "args": [
+                "-NoProfile",
+                "-Command",
+                "$flags = (& 'C:\\msys64\\ucrt64\\bin\\pkg-config.exe' --cflags --libs opencv5) -split '\\s+'; & 'C:\\msys64\\ucrt64\\bin\\g++.exe' '${workspaceFolder}\\main.cpp' -std=c++17 -Wall -Wextra -o '${workspaceFolder}\\main.exe' $flags"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
