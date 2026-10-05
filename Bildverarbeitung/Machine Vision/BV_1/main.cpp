@@ -1,31 +1,22 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
-#include <filesystem>
+
+using namespace std;
+using namespace cv;
 
 int main()
 {
-    std::cout << "OpenCV: " << CV_VERSION << '\n';
-    std::cout << "Ordner: " << std::filesystem::current_path() << '\n';
+    Mat img = imread("Auge.jpg");
+    
+    cout << "width: " << img.cols << endl;
+    cout << "height: " << img.rows << endl;
 
-    std::cout << "Datei existiert: "
-              << std::filesystem::exists("Auge.jpg") << '\n';
-
-    std::cout << "OpenCV erkennt Bildformat: "
-              << cv::haveImageReader("Auge.jpg") << '\n';
-
-    cv::Mat img = cv::imread("Auge.jpg");
-
-    if (img.empty())
-    {
-        std::cerr << "FEHLER: imread konnte Auge.jpg nicht laden.\n";
-        return 1;
-    }
-
-    std::cout << "Bild geladen: "
-              << img.cols << " x " << img.rows << '\n';
-
-    cv::imshow("Bild", img);
-    cv::waitKey(0);
+    imshow("Bild", img);
+    Mat gray;
+    cvtColor(img, gray, COLOR_BGR2GRAY);
+    imshow("Grau", gray);
+    waitKey(0);
+    
 
     return 0;
 }
