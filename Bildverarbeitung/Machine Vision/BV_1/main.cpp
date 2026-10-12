@@ -1,90 +1,78 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
+#include "help.h"
 
 using namespace std;
 using namespace cv;
 
-Mat Easy_gray(Mat img)
+
+void Ex_1(Mat img)
 {
-    Mat gray;
-    cvtColor(img, gray, COLOR_BGR2GRAY);
-    imshow("Grau", gray);
-
-    return gray;
-}
-
-Mat manual_gray(Mat img)
-{
-    Mat gray2(img.rows, img.cols, CV_8UC1);
-
-    Vec3b pixel;
-
-    for(int i = 0; i < img.cols; i++)
-    {
-        for(int j = 0; j < img.rows; j++)
-        {
-            pixel = img.at<Vec3b>(i,j);
-            int B = pixel[0];
-            int G = pixel[1];
-            int R = pixel[2];
-            int sum = B + G + R;
-
-            gray2.at<uchar>(i,j) = sum/img.channels();
-        }
-    }
-
-    imshow("manuelles grau", gray2);
-
-    return gray2;
-}
-
-
-vector<pair<int, int>> compare(const Mat& img1, const Mat& img2)
-{
-    vector<pair<int, int>> values;
-
-    if (img1.size() != img2.size() || img1.type() != CV_8UC1 || img2.type() != CV_8UC1)
-    {
-        return {{-1, -1}};
-    }
-
-    Mat comp;
-    cvtColor(img1, comp, COLOR_GRAY2BGR);
-
-    for (int i = 0; i < img1.rows; i++)
-    {
-        for (int j = 0; j < img1.cols; j++)
-        {
-            uchar pixel1 = img1.at<uchar>(i, j);
-            uchar pixel2 = img2.at<uchar>(i, j);
-
-            if (abs(int(pixel1) - int(pixel2)) > 10)
-            {
-                values.emplace_back(i, j);
-                comp.at<Vec3b>(i, j) = Vec3b(0, 0, 255);
-            }
-        }
-    }
-
-    imshow("compared", comp);
-    return values;
-}
-
-int main()
-{
-    Mat img = imread("Auge.jpg");
-    
+    // b) 
     cout << "width: " << img.cols << endl;
     cout << "height: " << img.rows << endl;
     cout << "size: " << img.size() << endl;
     cout << "type: " << img.type() << endl;
 
-    imshow("Bild", img);
+    // c)
+    imwrite("Bild_png.png", img);
+    imwrite("Bild_bmp.bmp", img);
 
-    Easy_gray(img);
-    manual_gray(img);
+    Mat img_png = imread("Bild_png.png");
+    Mat img_bmp = imread("Bild_bmp.bmp");
 
-    compare(Easy_gray(img), manual_gray(img));
+    imshow("Original", img);
+    imshow("PNG", img_png);
+    imshow("BMP", img_bmp);
+
+    waitKey(0);
+}
+
+void Ex_2(Mat img)
+{
+    // 1.2
+    // a)
+    Mat gray = manual_gray(img);
+
+    // b)
+    Mat quant = quantize_img(img, 2);
+    //imwrite("Quantisiert", quant);
+    imshow("Quantisiiert", quant);
+
+    // d)
+    Mat gray2;
+    cvtColor(img, gray2, COLOR_GRAY2BGR);
+    imshow("gray", gray2);
+
+    // e)
+    int sum = 0;
+    for(int y = 0; y < gray2.rows; y++)
+    {
+        for(int x = 0; x < gray2.cols; x++)
+        {
+            sum += gray2.at<uchar>(y,x);
+        }
+    }
+
+    float mean = sum/(300/300);
+}
+
+
+int main()
+{
+    // 1.1
+    // a)
+    Mat img = imread("Auge.jpg");
+    Ex_1(img);
+
+    //1.2
+
+
+    //Easy_gray(img);
+    //manual_gray(img);
+
+    //compare(Easy_gray(img), manual_gray(img));
+
 
     waitKey(0);
     return 0;
